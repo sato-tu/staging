@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GAS × Gemini でスプレッドシート業務を革新</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+  /* ==============================
+     RESET & BASE
+  ============================== */
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --red: #ef4444;
+    --red-dark: #dc2626;
+    --navy: #1e3a5f;
+    --gray: #64748b;
+    --light: #f8fafc;
+    --border: #e2e8f0;
+    --white: #ffffff;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--light);
+    color: #1f2937;
+    line-height: 1.6;
+  }
+
+  /* ==============================
+     GLOBAL NAV
+  ============================== */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-logo-icon {
+    width: 36px;
+    height: 36px;
+    background: white;
+    border: 2px solid var(--red);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--red);
+    font-size: 18px;
+  }
+
+  .nav-logo-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .nav-logo-sub {
+    font-size: 11px;
+    color: var(--gray);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover {
+    color: var(--red-dark);
+  }
+
+  .nav-cta {
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    color: white !important;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 13px !important;
+    transition: box-shadow 0.2s, transform 0.2s !important;
+  }
+
+  .nav-cta:hover {
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(239,68,68,0.4);
+  }
+
+  /* ==============================
+     SECTION COMMON
+  ============================== */
+  section {
+    padding: 100px 0;
+  }
+
+  .container {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(239,68,68,0.1);
+    border: 2px solid rgba(239,68,68,0.2);
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--red-dark);
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .section-title .accent {
+    color: var(--red-dark);
+  }
+
+  .section-subtitle {
+    font-size: 17px;
+    color: var(--gray);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ==============================
+     HERO SECTION
+  ============================== */
+  #hero {
+    padding-top: 140px;
+    padding-bottom: 100px;
+    background: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-pattern {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(239,68,68,0.05) 0%, rgba(239,68,68,0.02) 100%);
+    border-radius: 0 0 0 200px;
+    pointer-events: none;
+  }
+
+  .hero-bg-grid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 35%;
+    background:
+      linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px),
+      linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .hero-deco-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(239,68,68,0.05);
+    border: 1px solid rgba(239,68,68,0.1);
+    pointer-events: none;
+  }
+
+  .hero-deco-circle-1 { width: 360px; height: 360px; top: -100px; right: -100px; }
+  .hero-deco-circle-2 { width: 220px; height: 220px; bottom: -60px; left: -60px; }
+
+  .hero-float-icon {
+    position: absolute;
+    color: rgba(239,68,68,0.12);
+    font-size: 72px;
+    pointer-events: none;
+    animation: float 7s ease-in-out infinite;
+  }
+
+  .hero-float-icon-1 { top: 22%; left: 6%; animation-duration: 6s; }
+  .hero-float-icon-2 { bottom: 18%; right: 8%; animation-duration: 9s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 900;
+    color: #1f2937;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+
+  .hero-title .hl {
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: 19px;
+    color: var(--gray);
+    margin-bottom: 52px;
+    line-height: 1.7;
+  }
+
+  .hero-kpis {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 52px;
+  }
+
+  .hero-kpi {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: white;
+    padding: 16px 28px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .hero-kpi:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  }
+
+  .hero-kpi-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .hero-kpi-label {
+    font-size: 12px;
+    color: var(--gray);
+    margin-bottom: 2px;
+  }
+
+  .hero-kpi-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--navy);
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    color: white;
+    padding: 18px 40px;
+    border-radius: 50px;
+    font-size: 17px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 24px rgba(239,68,68,0.4);
+  }
+
+  .hero-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 36px rgba(239,68,68,0.5);
+  }
+
+  /* ==============================
+     WHY SECTION
+  ============================== */
+  #why {
+    background: var(--light);
+  }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .why-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .benefit-card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px 22px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .benefit-card:hover {
+    border-color: var(--red-dark);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .benefit-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .icon-blue   { background: #e0f2fe; color: #0284c7; }
+  .icon-green  { background: #dcfce7; color: #16a34a; }
+  .icon-purple { background: #f3e8ff; color: #9333ea; }
+  .icon-orange { background: #ffedd5; color: #ea580c; }
+  .icon-red    { background: #fee2e2; color: #dc2626; }
+
+  .benefit-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+
+  .benefit-desc {
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+
+  .benefit-desc .hl {
+    color: var(--red-dark);
+    font-weight: 600;
+  }
+
+  .why-results {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: sticky;
+    top: 84px;
+  }
+
+  .result-box {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    border: 1px solid #fee2e2;
+    box-shadow: 0 2px 6px rgba(239,68,68,0.08);
+  }
+
+  .result-box-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .result-box-icon {
+    width: 44px;
+    height: 44px;
+    background: #fee2e2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--red-dark);
+    font-size: 20px;
+  }
+
+  .result-box-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .result-box-sub {
+    font-size: 13px;
+    color: var(--gray);
+  }
+
+  .result-stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .result-stat-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--red-dark);
+  }
+
+  .result-stat-lbl {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 2px;
+  }
+
+  .result-case {
+    background: var(--light);
+    border-radius: 10px;
+    padding: 12px 16px;
+    border: 1px solid #fee2e2;
+    font-size: 13px;
+    color: var(--navy);
+  }
+
+  .result-case span {
+    display: block;
+    font-size: 12px;
+    color: var(--gray);
+    margin-bottom: 4px;
+  }
+
+  .result-check-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .result-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--navy);
+  }
+
+  .result-check i {
+    color: #16a34a;
+    flex-shrink: 0;
+  }
+
+  /* ==============================
+     CASES SECTION
+  ============================== */
+  #cases {
+    background: var(--white);
+  }
+
+  .cases-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .case-card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    position: relative;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .case-card:hover {
+    border-color: var(--red-dark);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  }
+
+  .efficiency-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: #fee2e2;
+    color: var(--red-dark);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .case-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .case-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .case-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 3px;
+  }
+
+  .case-tag {
+    font-size: 12px;
+    color: var(--gray);
+  }
+
+  .case-desc {
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .case-stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .stat-item {
+    flex: 1;
+    background: var(--light);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-val {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--red-dark);
+  }
+
+  .stat-lbl {
+    font-size: 11px;
+    color: var(--gray);
+  }
+
+  .case-note {
+    font-size: 12px;
+    color: var(--gray);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .case-note i {
+    color: var(--red-dark);
+  }
+
+  /* ==============================
+     FLOW SECTION
+  ============================== */
+  #flow {
+    background: var(--light);
+  }
+
+  .flow-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+    align-items: stretch;
+  }
+
+  .flow-steps::before {
+    content: '';
+    position: absolute;
+    top: 60px;
+    left: calc(12.5% + 20px);
+    right: calc(12.5% + 20px);
+    height: 2px;
+    background: linear-gradient(90deg, var(--red) 0%, var(--red-dark) 100%);
+    opacity: 0.25;
+    z-index: 0;
+  }
+
+  .flow-step {
+    background: white;
+    border-radius: 14px;
+    padding: 28px 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    margin: 0 10px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .flow-step:hover {
+    border-color: var(--red-dark);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  }
+
+  .step-num {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+  }
+
+  .step-icon-wrap {
+    width: 56px;
+    height: 56px;
+    background: var(--light);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--red-dark);
+    margin-bottom: 16px;
+  }
+
+  .step-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  .step-note {
+    width: 100%;
+    background: var(--light);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--gray);
+    text-align: left;
+    margin-top: auto;
+  }
+
+  .step-note i {
+    color: var(--red-dark);
+    margin-right: 4px;
+  }
+
+  .step-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #fee2e2;
+    color: var(--red-dark);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .flow-time-note {
+    text-align: center;
+    margin-top: 36px;
+    font-size: 15px;
+    color: var(--gray);
+  }
+
+  .flow-time-note strong {
+    color: var(--red-dark);
+    font-size: 18px;
+  }
+
+  /* ==============================
+     SUMMARY SECTION
+  ============================== */
+  #summary {
+    background: var(--white);
+  }
+
+  .summary-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+
+  .summary-kpi {
+    background: white;
+    border-radius: 14px;
+    padding: 22px 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .summary-kpi:hover {
+    border-color: var(--red-dark);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  }
+
+  .summary-kpi-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .summary-kpi-val {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .summary-kpi-val sup {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .summary-kpi-lbl {
+    font-size: 13px;
+    color: var(--gray);
+  }
+
+  .summary-bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+
+  .summary-card {
+    background: white;
+    border-radius: 14px;
+    padding: 28px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  .summary-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .summary-card-title i {
+    color: var(--red-dark);
+  }
+
+  .check-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+
+  .check-item i {
+    color: #16a34a;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .check-item .hl {
+    color: var(--red-dark);
+    font-weight: 700;
+  }
+
+  .action-steps-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .action-step {
+    flex: 1;
+    background: #fef2f2;
+    border-radius: 10px;
+    padding: 14px 10px;
+    text-align: center;
+    border: 1px solid #fee2e2;
+  }
+
+  .action-step-num {
+    width: 26px;
+    height: 26px;
+    background: var(--red-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    margin: 0 auto 8px;
+  }
+
+  .action-step-text {
+    font-size: 12px;
+    color: var(--navy);
+    font-weight: 700;
+  }
+
+  .arrow-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .arrow-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+
+  .arrow-item i {
+    color: var(--red-dark);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .arrow-item .hl {
+    color: var(--red-dark);
+    font-weight: 700;
+  }
+
+  .cta-wrap {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    color: white;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(239,68,68,0.35);
+  }
+
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(239,68,68,0.45);
+  }
+
+  /* ==============================
+     FOOTER
+  ============================== */
+  footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    padding: 32px;
+    font-size: 14px;
+  }
+
+  footer strong {
+    color: white;
+  }
+
+  .footer-bottom-bar {
+    height: 4px;
+    background: linear-gradient(90deg, var(--red), var(--red-dark));
+  }
+
+  /* ==============================
+     RESPONSIVE
+  ============================== */
+  @media (max-width: 900px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .container { padding: 0 20px; }
+    section { padding: 72px 0; }
+    .section-title { font-size: 28px; }
+    .why-grid,
+    .summary-bottom { grid-template-columns: 1fr; }
+    .cases-grid { grid-template-columns: 1fr; }
+    .flow-steps { grid-template-columns: 1fr 1fr; }
+    .flow-steps::before { display: none; }
+    .flow-step { margin: 0; }
+    .summary-kpis { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .hero-title { font-size: 28px; }
+    .hero-kpis { flex-direction: column; align-items: center; }
+    .flow-steps { grid-template-columns: 1fr; }
+    .summary-kpis { grid-template-columns: 1fr 1fr; }
+    .action-steps-row { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==============================
+     NAVIGATION
+============================== -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon"><i class="fas fa-robot"></i></div>
+    <div>
+      <div class="nav-logo-text">GAS × Gemini</div>
+      <div class="nav-logo-sub">自動化ソリューション</div>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#why">なぜGAS×Geminiか</a></li>
+    <li><a href="#cases">活用事例</a></li>
+    <li><a href="#flow">実装の流れ</a></li>
+    <li><a href="#summary">まとめ</a></li>
+    <li><a class="nav-cta" href="#summary"><i class="fas fa-play"></i> 自動化を始める</a></li>
+  </ul>
+</nav>
+
+<!-- ==============================
+     HERO
+============================== -->
+<section id="hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-bg-grid"></div>
+  <div class="hero-deco-circle hero-deco-circle-1"></div>
+  <div class="hero-deco-circle hero-deco-circle-2"></div>
+  <div class="hero-float-icon hero-float-icon-1"><i class="fas fa-robot"></i></div>
+  <div class="hero-float-icon hero-float-icon-2"><i class="fas fa-code"></i></div>
+
+  <div class="container">
+    <div class="hero-inner">
+      <div class="section-badge">
+        <span style="width:22px;height:22px;background:linear-gradient(135deg,var(--red),var(--red-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-star" style="color:white;font-size:11px;"></i></span>
+        Google Workspace 連携
+      </div>
+      <h1 class="hero-title">
+        <span class="hl">GAS × Gemini</span> で<br/>
+        スプレッドシート業務を革新
+      </h1>
+      <p class="hero-subtitle">
+        とっつきやすい自動化で組織の生産性を向上<br/>
+        プログラミング初心者でも始められる業務効率化
+      </p>
+      <div class="hero-kpis">
+        <div class="hero-kpi">
+          <div class="hero-kpi-icon"><i class="fas fa-clock"></i></div>
+          <div>
+            <div class="hero-kpi-label">時間削減</div>
+            <div class="hero-kpi-value">月500時間</div>
+          </div>
+        </div>
+        <div class="hero-kpi">
+          <div class="hero-kpi-icon"><i class="fas fa-chart-line"></i></div>
+          <div>
+            <div class="hero-kpi-label">効率向上</div>
+            <div class="hero-kpi-value">75%削減</div>
+          </div>
+        </div>
+        <div class="hero-kpi">
+          <div class="hero-kpi-icon"><i class="fas fa-users"></i></div>
+          <div>
+            <div class="hero-kpi-label">対象ユーザー</div>
+            <div class="hero-kpi-value">全社員</div>
+          </div>
+        </div>
+      </div>
+      <a class="hero-cta" href="#why">
+        <i class="fas fa-arrow-down"></i>
+        詳しく見る
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ==============================
+     WHY SECTION
+============================== -->
+<section id="why">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge"><i class="fas fa-question-circle"></i> 選ばれる理由</div>
+      <h2 class="section-title">なぜ<span class="accent">GAS × Gemini</span>なのか</h2>
+      <p class="section-subtitle">Google Workspace環境で最も効果的な自動化ソリューション</p>
+    </div>
+
+    <div class="why-grid">
+      <!-- Left: benefit cards -->
+      <div class="why-benefits">
+        <div class="benefit-card">
+          <div class="benefit-icon icon-blue"><i class="fas fa-cloud"></i></div>
+          <div>
+            <div class="benefit-title">Google Workspaceとの親和性</div>
+            <div class="benefit-desc">Gmail、スプレッドシート、カレンダー、ドライブなどと<span class="hl">シームレスに連携</span>。既存の業務フローに自然に組み込めます。</div>
+          </div>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon icon-green"><i class="fas fa-robot"></i></div>
+          <div>
+            <div class="benefit-title">Geminiがコードを自動生成</div>
+            <div class="benefit-desc">自然言語で業務内容を説明するだけで、<span class="hl">最適なGASコードを自動生成</span>。プログラミング初心者でも簡単に実装できます。</div>
+          </div>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon icon-purple"><i class="fas fa-code"></i></div>
+          <div>
+            <div class="benefit-title">JavaScriptベースで初心者にも取り組みやすい</div>
+            <div class="benefit-desc">広く使われているJavaScriptを基盤とし、<span class="hl">学習コストが低い</span>。Web上に豊富な情報やサンプルコードがあります。</div>
+          </div>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon icon-orange"><i class="fas fa-bolt"></i></div>
+          <div>
+            <div class="benefit-title">環境構築不要ですぐ始められる</div>
+            <div class="benefit-desc">WebブラウザとGoogleアカウントがあれば<span class="hl">すぐに利用開始</span>。特別なソフトウェアのインストールは不要です。</div>
+          </div>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon icon-red"><i class="fas fa-yen-sign"></i></div>
+          <div>
+            <div class="benefit-title">無料で小さく始めて拡張可能</div>
+            <div class="benefit-desc">Googleアカウントがあれば<span class="hl">追加費用なしで使える</span>。小さく始めて、必要に応じて拡張できます。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: results -->
+      <div class="why-results">
+        <div class="result-box">
+          <div class="result-box-header">
+            <div class="result-box-icon"><i class="fas fa-chart-line"></i></div>
+            <div>
+              <div class="result-box-title">導入効果の実証</div>
+              <div class="result-box-sub">実際の導入事例から得られた成果</div>
+            </div>
+          </div>
+          <div class="result-stats">
+            <div>
+              <div class="result-stat-val">75%</div>
+              <div class="result-stat-lbl">時間削減</div>
+            </div>
+            <div>
+              <div class="result-stat-val">67%</div>
+              <div class="result-stat-lbl">ミス削減</div>
+            </div>
+            <div>
+              <div class="result-stat-val">21件</div>
+              <div class="result-stat-lbl">自動化完了</div>
+            </div>
+          </div>
+          <div class="result-case">
+            <span>グロービスの事例:</span>
+            <strong>6ヶ月で月500時間の業務自動化を実現</strong>
+          </div>
+        </div>
+
+        <div class="result-check-list">
+          <div class="result-check"><i class="fas fa-check-circle"></i><span>照合テスト: 6〜7時間 → 1時間</span></div>
+          <div class="result-check"><i class="fas fa-check-circle"></i><span>スプレッドシート作業: 90分 → 30分</span></div>
+          <div class="result-check"><i class="fas fa-check-circle"></i><span>メール送信漏れ: 完全ゼロ化</span></div>
+          <div class="result-check"><i class="fas fa-check-circle"></i><span>承認処理: 3日 → 1日</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==============================
+     CASES SECTION
+============================== -->
+<section id="cases">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge"><i class="fas fa-briefcase"></i> 活用事例</div>
+      <h2 class="section-title">具体的な<span class="accent">自動化事例</span></h2>
+      <p class="section-subtitle">GAS × Geminiで実現した業務効率化の実例</p>
+    </div>
+
+    <div class="cases-grid">
+      <!-- 事例1 -->
+      <div class="case-card">
+        <div class="efficiency-badge">67%削減</div>
+        <div class="case-header">
+          <div class="case-icon icon-blue"><i class="fas fa-chart-bar"></i></div>
+          <div>
+            <div class="case-title">データ集計の自動化</div>
+            <div class="case-tag">複数ソース → 集計 → グラフ更新</div>
+          </div>
+        </div>
+        <p class="case-desc">複数のシートやファイルからデータを自動で集計し、レポート用シートにまとめてグラフを更新。手作業での転記ミスを防止。</p>
+        <div class="case-stats">
+          <div class="stat-item">
+            <div class="stat-val">90分→30分</div>
+            <div class="stat-lbl">作業時間</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val">75%</div>
+            <div class="stat-lbl">削減率</div>
+          </div>
+        </div>
+        <div class="case-note"><i class="fas fa-check-circle"></i> 日次レポートを自動生成</div>
+      </div>
+
+      <!-- 事例2 -->
+      <div class="case-card">
+        <div class="efficiency-badge">完全自動化</div>
+        <div class="case-header">
+          <div class="case-icon icon-green"><i class="fas fa-envelope"></i></div>
+          <div>
+            <div class="case-title">Gmail送信の自動化</div>
+            <div class="case-tag">シートから定型レポート送信</div>
+          </div>
+        </div>
+        <p class="case-desc">スプレッドシートに記載された売上報告を、あらかじめ設定した時間に自動で送信。送信漏れを防止。</p>
+        <div class="case-stats">
+          <div class="stat-item">
+            <div class="stat-val">0件</div>
+            <div class="stat-lbl">送信漏れ</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val">100%</div>
+            <div class="stat-lbl">自動化率</div>
+          </div>
+        </div>
+        <div class="case-note"><i class="fas fa-check-circle"></i> 毎朝8時に自動送信</div>
+      </div>
+
+      <!-- 事例3 -->
+      <div class="case-card">
+        <div class="efficiency-badge">可視化</div>
+        <div class="case-header">
+          <div class="case-icon icon-purple"><i class="fas fa-file-alt"></i></div>
+          <div>
+            <div class="case-title">フォーム承認フローの自動化</div>
+            <div class="case-tag">申請 → 転記 → 承認 → 記録</div>
+          </div>
+        </div>
+        <p class="case-desc">経費精算のワークフローを自動化。申請内容をスプレッドシートに転記し、担当者へ承認依頼を自動送信。</p>
+        <div class="case-stats">
+          <div class="stat-item">
+            <div class="stat-val">3日→1日</div>
+            <div class="stat-lbl">処理時間</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val">80%</div>
+            <div class="stat-lbl">効率化</div>
+          </div>
+        </div>
+        <div class="case-note"><i class="fas fa-check-circle"></i> 進捗状況をリアルタイム表示</div>
+      </div>
+
+      <!-- 事例4 -->
+      <div class="case-card">
+        <div class="efficiency-badge">連携</div>
+        <div class="case-header">
+          <div class="case-icon icon-orange"><i class="fas fa-link"></i></div>
+          <div>
+            <div class="case-title">外部サービス連携</div>
+            <div class="case-tag">Slack / Chatwork通知</div>
+          </div>
+        </div>
+        <p class="case-desc">業務システムのタスク進捗を定期的にチャットツールに通知。個別にシステムを開く手間を削減。</p>
+        <div class="case-stats">
+          <div class="stat-item">
+            <div class="stat-val">50%</div>
+            <div class="stat-lbl">確認工数削減</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-val">リアルタイム</div>
+            <div class="stat-lbl">通知</div>
+          </div>
+        </div>
+        <div class="case-note"><i class="fas fa-check-circle"></i> エラー検知も自動通知</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==============================
+     FLOW SECTION
+============================== -->
+<section id="flow">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge"><i class="fas fa-route"></i> 実装ガイド</div>
+      <h2 class="section-title">実装の<span class="accent">流れ</span></h2>
+      <p class="section-subtitle">Geminiを活用したGASコード生成から自動化完了までの4ステップ</p>
+    </div>
+
+    <div class="flow-steps">
+      <!-- Step 1 -->
+      <div class="flow-step">
+        <div class="step-badge">要望入力</div>
+        <div class="step-num">1</div>
+        <div class="step-icon-wrap"><i class="fas fa-comments"></i></div>
+        <div class="step-title">Geminiに業務要件を指示</div>
+        <p class="step-desc">自然言語で業務内容を説明し、必要な機能を明確化</p>
+        <div class="step-note"><i class="fas fa-check-circle"></i> 例：「シートAの未処理行を集計し、Gmailで日次レポートを送る」</div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="flow-step">
+        <div class="step-badge">AI生成</div>
+        <div class="step-num">2</div>
+        <div class="step-icon-wrap"><i class="fas fa-robot"></i></div>
+        <div class="step-title">Geminiがコード生成</div>
+        <p class="step-desc">AIが最適なGASコードとコメントを自動生成</p>
+        <div class="step-note"><i class="fas fa-check-circle"></i> コード生成・最適化・エラーチェック</div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="flow-step">
+        <div class="step-badge">実装</div>
+        <div class="step-num">3</div>
+        <div class="step-icon-wrap"><i class="fas fa-code"></i></div>
+        <div class="step-title">GASエディタで実行</div>
+        <p class="step-desc">生成されたコードをエディタに貼り付けてテスト実行</p>
+        <div class="step-note"><i class="fas fa-check-circle"></i> 権限許可 → テスト実行 → デバッグ</div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="flow-step">
+        <div class="step-badge">自動化</div>
+        <div class="step-num">4</div>
+        <div class="step-icon-wrap"><i class="fas fa-cog"></i></div>
+        <div class="step-title">トリガー設定で自動化完了</div>
+        <p class="step-desc">時間主導/イベントトリガーで自動実行を設定</p>
+        <div class="step-note"><i class="fas fa-check-circle"></i> 定期実行・イベント駆動・監視設定</div>
+      </div>
+    </div>
+
+    <p class="flow-time-note">初回実装の所要時間: <strong>約15分</strong> から始められます</p>
+  </div>
+</section>
+
+<!-- ==============================
+     SUMMARY SECTION
+============================== -->
+<section id="summary">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge"><i class="fas fa-flag-checkered"></i> まとめ</div>
+      <h2 class="section-title">まとめ・<span class="accent">期待効果</span></h2>
+      <p class="section-subtitle">GAS × Geminiで実現する業務自動化の価値</p>
+    </div>
+
+    <!-- KPI row -->
+    <div class="summary-kpis">
+      <div class="summary-kpi">
+        <div class="summary-kpi-icon"><i class="fas fa-clock"></i></div>
+        <div>
+          <div class="summary-kpi-val">500<sup>時間/月</sup></div>
+          <div class="summary-kpi-lbl">業務時間削減</div>
+        </div>
+      </div>
+      <div class="summary-kpi">
+        <div class="summary-kpi-icon"><i class="fas fa-chart-line"></i></div>
+        <div>
+          <div class="summary-kpi-val">75<sup>%</sup></div>
+          <div class="summary-kpi-lbl">効率向上</div>
+        </div>
+      </div>
+      <div class="summary-kpi">
+        <div class="summary-kpi-icon"><i class="fas fa-check-circle"></i></div>
+        <div>
+          <div class="summary-kpi-val">21<sup>件</sup></div>
+          <div class="summary-kpi-lbl">自動化完了</div>
+        </div>
+      </div>
+      <div class="summary-kpi">
+        <div class="summary-kpi-icon"><i class="fas fa-users"></i></div>
+        <div>
+          <div class="summary-kpi-val">100<sup>%</sup></div>
+          <div class="summary-kpi-lbl">満足度</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom 2-column -->
+    <div class="summary-bottom">
+      <!-- Left: 期待効果 + 進め方 -->
+      <div style="display:flex;flex-direction:column;gap:24px;">
+        <div class="summary-card">
+          <div class="summary-card-title"><i class="fas fa-bullseye"></i> 期待効果</div>
+          <div class="check-list">
+            <div class="check-item"><i class="fas fa-check-circle"></i><span><span class="hl">工数削減：</span>定型作業の自動化で月500時間削減</span></div>
+            <div class="check-item"><i class="fas fa-check-circle"></i><span><span class="hl">ミス抑止：</span>手作業による入力ミスを防止</span></div>
+            <div class="check-item"><i class="fas fa-check-circle"></i><span><span class="hl">コア業務へ集中：</span>創造的な業務に注力可能</span></div>
+            <div class="check-item"><i class="fas fa-check-circle"></i><span><span class="hl">リアルタイム化：</span>データの即時反映・可視化</span></div>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-title"><i class="fas fa-route"></i> 進め方</div>
+          <div class="action-steps-row">
+            <div class="action-step">
+              <div class="action-step-num">1</div>
+              <div class="action-step-text">小さく始める</div>
+            </div>
+            <div class="action-step">
+              <div class="action-step-num">2</div>
+              <div class="action-step-text">横展開</div>
+            </div>
+            <div class="action-step">
+              <div class="action-step-num">3</div>
+              <div class="action-step-text">標準化</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: 今日からのアクション -->
+      <div class="summary-card">
+        <div class="summary-card-title"><i class="fas fa-rocket"></i> 今日からのアクション</div>
+        <p style="font-size:14px;color:var(--gray);margin-bottom:20px;">1つの定型作業を選び、GeminiでGASコードを生成して実装しましょう。</p>
+        <div class="arrow-list">
+          <div class="arrow-item"><i class="fas fa-arrow-right"></i><span><span class="hl">ステップ1：</span>業務を1つ選定（データ集計・メール送信など）</span></div>
+          <div class="arrow-item"><i class="fas fa-arrow-right"></i><span><span class="hl">ステップ2：</span>Geminiに要件を説明してコード生成</span></div>
+          <div class="arrow-item"><i class="fas fa-arrow-right"></i><span><span class="hl">ステップ3：</span>GASエディタで実装・テスト</span></div>
+          <div class="arrow-item"><i class="fas fa-arrow-right"></i><span><span class="hl">ステップ4：</span>トリガー設定で自動化完了</span></div>
+        </div>
+        <div class="cta-wrap">
+          <a class="cta-btn" href="#">
+            <i class="fas fa-play"></i>
+            自動化を始める
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==============================
+     FOOTER
+============================== -->
+<div class="footer-bottom-bar"></div>
+<footer>
+  <strong>GAS × Gemini</strong> 自動化ソリューション &nbsp;|&nbsp; Google Workspace 連携による業務効率化
+</footer>
+
+</body>
+</html>
